@@ -8,17 +8,24 @@
         <IsPackable>false</IsPackable>
         <IsTestProject>true</IsTestProject>
         <RootNamespace>TestProject</RootNamespace>
+        <LangVersion>preview</LangVersion>
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.6.0"/>
-        <PackageReference Include="MSTest.TestAdapter" Version="3.0.4"/>
-        <PackageReference Include="MSTest.TestFramework" Version="3.0.4"/>
-        <PackageReference Include="coverlet.collector" Version="6.0.0"/>
+        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.6.0" />
+        <PackageReference Include="MSTest.TestAdapter" Version="3.0.4" />
+        <PackageReference Include="MSTest.TestFramework" Version="3.0.4" />
+        <PackageReference Include="coverlet.collector" Version="6.0.0" />
     </ItemGroup>
 
     <ItemGroup>
       <ProjectReference Include="..\lab\lab.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Reference Include="ClassLib, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
+        <HintPath>..\..\10-leeebeda\ClassLib\bin\Debug\net7.0\ClassLib.dll</HintPath>
+      </Reference>
     </ItemGroup>
 
 </Project>
