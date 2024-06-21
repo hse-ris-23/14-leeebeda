@@ -8,341 +8,317 @@ namespace lab_14
 {
     public class Program
     {
-        private static void CommandsForPart1()
+        // Отображение меню для первой части
+        private static void DisplayMenuPart1()
         {
-            Console.WriteLine("Меню часть 1.\n" +
-                              "----------------------------------------------------------------------------\n" +
-                              "1. На выборку данных(Where).\n" +
-                              "2. Использование операций над множествами (Union,Except, Intersect).\n" +
+            Console.WriteLine("\nМеню часть 1.\n" +
+                              "1. Выборка данных (Where).\n" +
+                              "2. Операции над множествами (Union, Except, Intersect).\n" +
                               "3. Агрегирование данных (Sum, Max, Min, Average).\n" +
                               "4. Группировка данных (Group by).\n" +
                               "5. Получение нового типа (Let).\n" +
-                              "6. Переход к части 2.\n" +
-                              "----------------------------------------------------------------------------\n");
+                              "6. Переход к части 2.\n");
         }
 
-        private static void CommandsForPart2()
+        // Отображение меню для второй части
+        private static void DisplayMenuPart2()
         {
-            Console.WriteLine("Меню часть 2.\n" +
-                              "----------------------------------------------------------------------------\n" +
-                              "1. На выборку данных(Where).\n" +
-                              "2. Получение счетчика(Count). \n" +
-                              "3. Агрегирование данных (Sum, Max, Min, Average). \n" +
+            Console.WriteLine("\nМеню часть 2.\n" +
+                              "1. Выборка данных (Where).\n" +
+                              "2. Получение счетчика (Count).\n" +
+                              "3. Агрегирование данных (Sum, Max, Min, Average).\n" +
                               "4. Группировка данных (Group by).\n" +
-                              "5. Завершение работы.\n" +
-                              "----------------------------------------------------------------------------\n");
+                              "5. Завершение работы.\n");
         }
 
-        // Создание коллекции
-        public static List<Instrument> MakeCollection(int length)
+        // Создание коллекции инструментов
+        public static List<Instrument> CreateCollection(int length)
         {
-            var list = new List<Instrument>();
+            var instruments = new List<Instrument>();
             for (int i = 0; i < length; i++)
             {
-                Guitar g = new Guitar();
-                g.RandomInit();
-                list.Add(g);
+                var guitar = new Guitar();
+                guitar.RandomInit();
+                instruments.Add(guitar);
             }
-            return list;
+            return instruments;
         }
 
-        // На выборку данных (Where) - часть 1
-        public static void WhereCasioYamaha(SortedDictionary<string, List<Instrument>> collection)
+        // Where, часть 1 - Выборка инструментов Casio и Yamaha
+        public static void SelectCasioYamaha(SortedDictionary<string, List<Instrument>> collection)
         {
-            // Запрос LINQ на вывод музыкальных инструментов с названием Casio с отложенным выполнеием
-            Console.WriteLine("\nЗапрос LINQ на вывод музыкальных инструментов с названием Casio");
-            var res1 = from gr in collection
-                       from mi in gr.Value
-                       where mi is Guitar && mi.Name == "Casio"
-                       select mi;
+            Console.WriteLine("\nЗапрос LINQ на вывод инструментов Casio");
+            var casioInstruments = from grp in collection
+                from instrument in grp.Value
+                where instrument is Guitar && instrument.Name == "Casio"
+                select instrument;
 
-            // Вывод  
-            Console.WriteLine("\nИнструменты с назвванием Casio");
-            foreach (var item in res1)
+            Console.WriteLine("\nИнструменты Casio");
+            foreach (var item in casioInstruments)
                 Console.WriteLine(item);
 
+            Console.WriteLine("\nМетоды расширения на вывод инструментов Yamaha");
+            var yamahaInstruments = collection.SelectMany(group => group.Value)
+                                              .Where(instrument => instrument is Guitar && instrument.Name == "Yamaha");
 
-            // Методы расширения на вывод музыкальных инструментов с названием Casio с отложенным выполнеием
-            Console.WriteLine("\nМетоды расширения на вывод музыкальных инструментов с названием Yamaha");
-            var res2 = collection.SelectMany(gr => gr.Value)
-                              .Where(mi => mi is Guitar && mi.Name == "Yamaha");
-
-            // Вывод  
-            Console.WriteLine("\nИнструменты с назвванием Yamaha");
-            foreach (var item in res2)
+            Console.WriteLine("\nИнструменты Yamaha");
+            foreach (var item in yamahaInstruments)
                 Console.WriteLine(item);
         }
 
-        // На выборку данных (Where) - часть 2
-        public static void WhereCasioYamaha2(MyCollection<Instrument> collection)
+        // Where, часть 2 - Выборка инструментов Casio и Yamaha с MyCollection
+        public static void SelectCasioYamaha2(MyCollection<Instrument> collection)
         {
-            // Запрос LINQ на вывод музыкальных инструментов с названием Casio с отложенным выполнеием
-            Console.WriteLine("\nЗапрос LINQ на вывод музыкальных инструментов с названием Casio");
-            var res1 = from mi in collection
-                       where mi?.Name?.ToString() == "Casio"
-                       select mi;
+            Console.WriteLine("\nЗапрос LINQ на вывод инструментов Casio");
+            var casioInstruments = from instrument in collection
+                                   where instrument?.Name?.ToString() == "Casio"
+                                   select instrument;
 
-            // Вывод  
-            Console.WriteLine("\nИнструменты с назвванием Casio");
-            foreach (var item in res1)
-                Console.WriteLine(item.GetType());
-            
+            Console.WriteLine("\nИнструменты Casio");
+            foreach (var item in casioInstruments)
+            {
+                if (item != null)
+                {
+                    Console.WriteLine($"Name: {item.Name}, Id: {item.id}");
+                }
+            }
 
-            // Методы расширения на вывод музыкальных инструментов с названием Casio с отложенным выполнеием
-            Console.WriteLine("\nМетоды расширения на вывод музыкальных инструментов с названием Yamaha");
-            var res2 = collection.Select(gr => gr)
-                              .Where(mi => mi?.id != null && mi?.Name == "Yamaha");
+            Console.WriteLine("\nМетоды расширения на вывод инструментов Yamaha");
+            var yamahaInstruments = collection.Select(instrument => instrument)
+                                              .Where(instrument => instrument?.id != null && instrument?.Name == "Yamaha");
 
-            // Вывод  
-            Console.WriteLine("\nИнструменты с назвванием Yamaha");
-            foreach (var item in res2)
-                Console.WriteLine(item);
+            Console.WriteLine("\nИнструменты Yamaha");
+            foreach (var item in yamahaInstruments)
+            {
+                if (item != null)
+                {
+                    Console.WriteLine($"Name: {item.Name}, Id: {item.id}");
+                }
+            }
         }
 
-        // Использование операций над множествами (Union,Except, Intersect) - часть 1
-        public static void UnionGroup(SortedDictionary<string, List<Instrument>> collection)
+        // Union, часть 1 - Объединение групп инструментов
+        public static void UnionGroups(SortedDictionary<string, List<Instrument>> collection)
         {
-            // Запрос LINQ на объеденение музыкальных инструментов из двух групп
-            Console.WriteLine("\nЗапрос LINQ на объеденение музыкальных инструментов из двух групп");
-            var res1 = (from gr in collection
-                        from mi in gr.Value 
-                        select mi)
-                        .Union(from gr in collection
-                              from mi in gr.Value 
-                              select mi);
+            Console.WriteLine("\nЗапрос LINQ на объединение инструментов из двух групп");
+            var unionInstrumentsLinq = 
+                (from grp in collection
+                    from instrument in grp.Value
+                    select instrument)
+                .Union(from grp in collection
+                    from instrument in grp.Value
+                    select instrument);
 
-            // Вывод  
-            foreach (var item in res1)
+
+            foreach (var item in unionInstrumentsLinq)
                 Console.WriteLine(item);
 
-            // Методы расширения на объеденение музыкальных инструментов из двух групп
-            Console.WriteLine("\nМетоды расширения на объеденение музыкальных инструментов из двух групп");
-            var res2 = collection.SelectMany(gr => gr.Value)
-                .Union(collection.SelectMany(gr => gr.Value));
+            Console.WriteLine("\nМетоды расширения на объединение инструментов из двух групп");
+            var unionInstrumentsExtensions = collection.SelectMany(group => group.Value)
+                                                        .Union(collection.SelectMany(group => group.Value));
 
-            // Вывод  
-            foreach (var item in res2)
+            foreach (var item in unionInstrumentsExtensions)
                 Console.WriteLine(item);
         }
 
-        // Получение счетчика(Count) - часть 2
+        // Count, часть 2 - Подсчет инструментов Casio и Yamaha
         public static void CountCasioYamaha(MyCollection<Instrument> collection)
         {
-            // Запрос LINQ на вывод количества музыкальных инструментов с названием Casio с отложенным выполнеием
-            Console.WriteLine("\nЗапрос LINQ на вывод количества музыкальных инструментов с названием Casio");
-            var res1 = (from mi in collection
-                       where mi?.Name?.ToString() == "Casio"
-                       select mi).Count();
+            Console.WriteLine("\nЗапрос LINQ на вывод количества инструментов Casio");
+            var casioCount = (from instrument in collection
+                              where instrument?.Name?.ToString() == "Casio"
+                              select instrument).Count();
 
-            // Вывод  
-            Console.WriteLine($"Количество инструментов с названием Casio: {res1}");
+            Console.WriteLine($"Количество инструментов Casio: {casioCount}");
 
+            Console.WriteLine("\nМетоды расширения на вывод количества инструментов Yamaha");
+            var yamahaCount = collection.Select(instrument => instrument)
+                                        .Count(instrument => instrument?.Name == "Yamaha");
 
-            // Методы расширения на вывод музыкальных инструментов с названием Casio с отложенным выполнеием
-            Console.WriteLine("\nМетоды расширения на вывод количества музыкальных инструментов с названием Yamaha");
-            var res2 = collection.Select(gr => gr)
-                              .Where(mi => mi?.Name == "Yamaha").Count();
-
-            // Вывод  
-            Console.WriteLine($"Количество инструментов с названием Yamaha: {res2}");
+            Console.WriteLine($"Количество инструментов Yamaha: {yamahaCount}");
         }
 
-        // Агрегирование данных (Sum, Max, Min, Average) - часть 1
+        // Sum, Max, Min, Average, часть 1 - Агрегирование данных
         public static void MaxAverageId(SortedDictionary<string, List<Instrument>> collection)
         {
-            // Запрос LINQ на вывод среднего значения показателя id всех инструментов
             Console.WriteLine("\nЗапрос LINQ на вывод среднего значения показателя id всех инструментов");
-            var res1 = (from gr in collection
-                       from mi in gr.Value
-                       select mi.id)
-                       .Average();
-            // Вывод  
-            Console.WriteLine($"Среднее значение показателя id всех инструментов: {res1}");
+            var averageIdLinq = (from grp in collection
+                                 from instrument in grp.Value
+                                 select instrument.id).Average();
 
-            // Методы расширения на вывод максимального значения показателя id всех инструментов
-            Console.WriteLine("\nМетоды расширения на вывод среднего значения показателя id всех инструментов");
-            var res2 = collection.SelectMany(gr => gr.Value)
-                              .Max(mi => mi.id);
+            Console.WriteLine($"Среднее значение показателя id всех инструментов: {averageIdLinq}");
 
-            // Вывод  
-            Console.WriteLine($"Максимальное значение показателя id всех инструментов: {res2}");
+            Console.WriteLine("\nМетоды расширения на вывод максимального значения показателя id всех инструментов");
+            var maxIdExtensions = collection.SelectMany(group => group.Value)
+                                            .Max(instrument => instrument.id);
+
+            Console.WriteLine($"Максимальное значение показателя id всех инструментов: {maxIdExtensions}");
         }
 
-        // Агрегирование данных (Sum, Max, Min, Average) - часть 2
+        // Sum, Max, Min, Average, часть 2 - Агрегирование данных с MyCollection
         public static void MaxAverageId2(MyCollection<Instrument> collection)
         {
-            // Запрос LINQ на вывод среднего значения показателя id всех инструментов
             Console.WriteLine("\nЗапрос LINQ на вывод среднего значения показателя id всех инструментов");
-            var res1 = (from mi in collection
-                        select mi?.id)
-                       .Average();
-            // Вывод  
-            Console.WriteLine($"Среднее значение показателя id всех инструментов: {res1}");
+            var averageIdLinq = (from instrument in collection
+                                 select instrument?.id).Average();
 
-            // Методы расширения на вывод максимального значения показателя id всех инструментов
-            Console.WriteLine("\nМетоды расширения на вывод среднего значения показателя id всех инструментов");
-            var res2 = collection.Select(gr => gr)
-                              .Max(mi => mi?.id);
+            Console.WriteLine($"Среднее значение показателя id всех инструментов: {averageIdLinq}");
 
-            // Вывод  
-            Console.WriteLine($"Максимальное значение показателя id всех инструментов: {res2}");
+            Console.WriteLine("\nМетоды расширения на вывод максимального значения показателя id всех инструментов");
+            var maxIdExtensions = collection.Select(instrument => instrument)
+                                            .Max(instrument => instrument?.id);
+
+            Console.WriteLine($"Максимальное значение показателя id всех инструментов: {maxIdExtensions}");
         }
 
-        // Группировка данных (Group by) - часть 1
-        public static void GroupNameAndStringCount(SortedDictionary<string, List<Instrument>> collection)
+        // Group by, часть 1 - Группировка данных
+        public static void GroupByInstrumentName(SortedDictionary<string, List<Instrument>> collection)
         {
-            // Запросы LINQ на группировку по Названию мукзыкальных инструментов
-            Console.WriteLine("\nЗапросы LINQ на группировку по Названию мукзыкальных инструментов ");
-            var res1 = from gr in collection
-                      from mi in gr.Value
-                      group mi by mi.Name;
+            // LINQ запрос для группировки
+            Console.WriteLine("\nЗапросы LINQ на группировку по названию инструментов");
+            var groupedByLinq = from grp in collection
+                from instrument in grp.Value
+                group instrument by instrument.Name into instrumentGroup
+                select instrumentGroup;
 
-            // Вывод  
-            Console.WriteLine("Группировка ");
-            foreach (var gr in res1)
+            // Вывод результатов
+            foreach (var group in groupedByLinq)
             {
-                Console.WriteLine(gr.Key);
-                foreach (var item in gr)
+                Console.WriteLine(group.Key);
+                foreach (var instrument in group)
                 {
-                    Console.WriteLine(item);
+                    Console.WriteLine($"{instrument.id} Инструмент {instrument.Name}.");
                 }
             }
 
-            // Методы расширения на группировку по максимальному количеству струн гитар
-            Console.WriteLine("\nМетоды расширения на группировку по максимальному количеству струн гитар ");
-            var res2 = collection.SelectMany(gr => gr.Value)
-                .Where(mi => mi is Guitar).GroupBy(x => ((Guitar)x).Strings);
+            // Методы расширения для группировки
+            Console.WriteLine("\nМетоды расширения на группировку по названию инструментов");
+            var groupedByExtensions = collection.SelectMany(grp => grp.Value)
+                .GroupBy(instrument => instrument.Name);
 
-            // Вывод  
-            foreach (var gr in res2)
+            // Вывод результатов
+            foreach (var group in groupedByExtensions)
             {
-                Console.WriteLine(gr.Key);
-                foreach (var item in gr)
+                Console.WriteLine(group.Key);
+                foreach (var instrument in group)
                 {
-                    Console.WriteLine(item);
+                    Console.WriteLine($"{instrument.id} Инструмент {instrument.Name}.");
                 }
             }
         }
 
-        // Группировка данных (Group by) - часть 2
-        public static void GroupNameAndStringCount2(MyCollection<Instrument> collection)
+        // Group by, часть 2 - Группировка данных с MyCollection
+        public static void GroupByInstrumentName2(MyCollection<Instrument> collection)
         {
-            // Запросы LINQ на группировку по названию мукзыкальных инструментов
-            Console.WriteLine("\nЗапросы LINQ на группировку по названию мукзыкальных инструментов ");
-            var res1 = from mi in collection
-                       group mi by mi?.Name;
+            // LINQ запрос для группировки
+            Console.WriteLine("\nЗапросы LINQ на группировку по названию инструментов");
+            var groupedByLinq = from instrument in collection
+                group instrument by instrument?.Name into instrumentGroup
+                select instrumentGroup;
 
-            // Вывод  
-            foreach (var gr in res1)
+            // Вывод результатов
+            foreach (var group in groupedByLinq)
             {
-                Console.WriteLine(gr.Key);
-                foreach (var item in gr)
+                Console.WriteLine(group.Key);
+                foreach (var instrument in group)
                 {
-                    Console.WriteLine(item);
+                    if (instrument != null)
+                    {
+                        Console.WriteLine($"{instrument.id} Инструмент {instrument.Name}.");
+                    }
                 }
             }
 
-            // Методы расширения на группировку по максимальному количеству струн гитар
-            Console.WriteLine("\nМетоды расширения на группировку по максимальному количеству струн гитар ");
-            var res2 = collection
-                .Select(gr => gr)
-                .GroupBy(mi => mi?.Name);
+            // Методы расширения для группировки
+            Console.WriteLine("\nМетоды расширения на группировку по названию инструментов");
+            var groupedByExtensions = collection
+                .GroupBy(instrument => instrument?.Name);
 
-            // Вывод  
-            foreach (var gr in res2)
+            // Вывод результатов
+            foreach (var group in groupedByExtensions)
             {
-                Console.WriteLine(gr.Key);
-                foreach (var item in gr)
+                Console.WriteLine(group.Key);
+                foreach (var instrument in group)
                 {
-                    Console.WriteLine(item);
+                    if (instrument != null)
+                    {
+                        Console.WriteLine($"{instrument.id} Инструмент {instrument.Name}.");
+                    }
                 }
             }
         }
 
-        // Получение нового типа(Let) - часть 1
-        public static void NewName(SortedDictionary<string, List<Instrument>> collection)
+        // Let, часть 1 - Получение нового типа ID
+        public static void CreateNewId(SortedDictionary<string, List<Instrument>> collection)
         {
-            // Запросы LINQ на получение нового типа ID
             Console.WriteLine("\nЗапросы LINQ на получение нового типа ID");
-            var res1 = from gr in collection
-                       from mi in gr.Value
-                       let newId = mi.id * 0.1
-                       select new { mi.Name, OldId = mi.id, NewID = mi.id * 0.1 };
+            var newIdLinq = from grp in collection
+                            from instrument in grp.Value
+                            let newId = instrument.id * 0.1
+                            select new { instrument.Name, OldId = instrument.id, NewID = newId };
 
-            // Вывод  
-            foreach (var item in res1)
-                Console.WriteLine(item);
+            foreach (var item in newIdLinq)
+                Console.WriteLine($"{{ Name = {item.Name}, OldId = {item.OldId}, NewID = {item.NewID:F1} }}");
 
-            // Методы расширения на получение нового типа
             Console.WriteLine("\nМетоды расширения на получение нового типа ID");
-            var res2 = collection.SelectMany(gr => gr.Value)
-                .Select(mi => new { mi.Name, OldId = mi.id, NewID = mi.id * 0.5 });
+            var newIdExtensions = collection.SelectMany(group => group.Value)
+                                            .Select(instrument => new { instrument.Name, OldId = instrument.id, NewID = instrument.id * 0.5 });
 
-            // Вывод  
-            foreach (var item in res2)
-                Console.WriteLine(item);
+            foreach (var item in newIdExtensions)
+                Console.WriteLine($"{{ Name = {item.Name}, OldId = {item.OldId}, NewID = {item.NewID:F1} }}");
         }
 
-
-
+        // Основной метод программы
         static void Main(string[] args)
         {
             Console.WriteLine("\nЧАСТЬ 1");
 
-            List<Instrument> group1 = MakeCollection(10);
-            List<Instrument> group2 = MakeCollection(10);
+            // Создание двух групп инструментов
+            var group1 = CreateCollection(10);
+            var group2 = CreateCollection(10);
 
-            SortedDictionary<string, List<Instrument>> participants = new SortedDictionary<string, List<Instrument>>();
+            var participants = new SortedDictionary<string, List<Instrument>>
+            {
+                { "Музыкальная группа 1", group1 },
+                { "Музыкальная группа 2", group2 }
+            };
 
-            participants.Add("Музыкальная группа 1", group1);
-            participants.Add("Музыкальная группа 2", group2);
-
-            Console.WriteLine("Музыкальные инструменты");
-
+            // Вывод инструментов в группах
+            Console.WriteLine("Инструменты:");
             foreach (var participant in participants)
             {
                 Console.WriteLine($"\nГруппа: {participant.Key}");
-                foreach (var musicalInstrument in participant.Value)
+                foreach (var instrument in participant.Value)
                 {
-                    Console.WriteLine(musicalInstrument);
+                    Console.WriteLine(instrument);
                 }
             }
 
-            // Меню часть 1
-            int answer = 1;
-            while (answer != 6)
+            // Меню для первой части
+            int choice = 1;
+            while (choice != 6)
             {
                 try
                 {
-                    CommandsForPart1();
-                    answer = int.Parse(Console.ReadLine());
-                    switch (answer)
+                    DisplayMenuPart1();
+                    choice = int.Parse(Console.ReadLine());
+                    switch (choice)
                     {
                         case 1:
-                            {
-                                WhereCasioYamaha(participants);
-                                break;
-                            }
+                            SelectCasioYamaha(participants);
+                            break;
                         case 2:
-                            {
-                                UnionGroup(participants);
-                                break;
-                            }
+                            UnionGroups(participants);
+                            break;
                         case 3:
-                            {
-                                MaxAverageId(participants);
-                                break;
-                            }
+                            MaxAverageId(participants);
+                            break;
                         case 4:
-                            {
-                                GroupNameAndStringCount(participants);
-                                break;
-                            }
+                            GroupByInstrumentName(participants);
+                            break;
                         case 5:
-                            {
-                                NewName(participants);
-                                break;
-                            }
+                            CreateNewId(participants);
+                            break;
                     }
                 }
                 catch (Exception ex)
@@ -352,50 +328,42 @@ namespace lab_14
             }
 
             Console.WriteLine("\nЧАСТЬ 2\n");
-            MyCollection<Instrument> myCollection = new MyCollection<Instrument>(10); // Создание хеш-таблицы музыкальных инструментов
 
+            // Инициализация коллекции инструментов
+            var myCollection = new MyCollection<Instrument>(10);
             for (int i = 0; i < 10; i++)
             {
-                Instrument a = new();
-                a.RandomInit();
-                myCollection.Add(a);
+                var instrument = new Instrument();
+                instrument.RandomInit();
+                myCollection.Add(instrument);
             }
 
             myCollection.Print();
-            // Меню часть 2
-            int answer2 = 1;
-            while (answer2 != 5)
+
+            // Меню для второй части
+            int choice2 = 1;
+            while (choice2 != 5)
             {
                 try
                 {
-                    CommandsForPart2();
-                    answer2 = int.Parse(Console.ReadLine());
-                    switch (answer2)
+                    DisplayMenuPart2();
+                    choice2 = int.Parse(Console.ReadLine());
+                    switch (choice2)
                     {
                         case 1:
-                            {
-                                WhereCasioYamaha2(myCollection);
-                                break;
-                            }
+                            SelectCasioYamaha2(myCollection);
+                            break;
                         case 2:
-                            {
-                                CountCasioYamaha(myCollection);
-                                break;
-                            }
+                            CountCasioYamaha(myCollection);
+                            break;
                         case 3:
-                            {
-                                MaxAverageId2(myCollection);
-                                break;
-                            }
+                            MaxAverageId2(myCollection);
+                            break;
                         case 4:
-                            {
-                                GroupNameAndStringCount2(myCollection);
-                                break;
-                            }
+                            GroupByInstrumentName2(myCollection);
+                            break;
                         case 5:
-                            {
-                                break;
-                            }
+                            break;
                     }
                 }
                 catch (Exception ex)
