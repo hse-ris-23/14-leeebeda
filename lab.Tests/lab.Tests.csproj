@@ -22,4 +22,10 @@
       <ProjectReference Include="..\lab\lab.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Reference Include="ClassLib, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
+        <HintPath>..\..\10-leeebeda\ClassLib\bin\Debug\net7.0\ClassLib.dll</HintPath>
+      </Reference>
+    </ItemGroup>
+
 </Project>
